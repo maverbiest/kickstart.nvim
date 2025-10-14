@@ -102,7 +102,7 @@ vim.g.have_nerd_font = false
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
+vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -172,6 +172,12 @@ vim.o.confirm = true
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+
+-- CUSTOM KEYMAPS BELOW
+vim.keymap.set({ 'n', 'v', 'o' }, 'H', '^', { noremap = true, silent = true })
+vim.keymap.set({ 'n', 'v', 'o' }, 'L', '$', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-d>', '<C-d>zz', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-u>', '<C-u>zz', { noremap = true, silent = true })
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
@@ -623,6 +629,13 @@ require('lazy').setup({
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, '[T]oggle Inlay [H]ints')
           end
+
+          -- Disable hover capability from Ruff (since I'm using pyright)
+          if client and client.name == 'ruff' then
+            -- Disable hover in favor of Pyright
+            client.server_capabilities.hoverProvider = false
+            client.server_capabilities.diagnosticProvider = nil
+          end
         end,
       })
 
@@ -672,9 +685,10 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        -- gopls = {},
-        -- pyright = {},
-        -- rust_analyzer = {},
+        gopls = {},
+        pyright = {},
+        ruff = {},
+        rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -852,6 +866,7 @@ require('lazy').setup({
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
         documentation = { auto_show = false, auto_show_delay_ms = 500 },
       },
+      -- FIXME:
 
       sources = {
         default = { 'lsp', 'path', 'snippets', 'lazydev' },
