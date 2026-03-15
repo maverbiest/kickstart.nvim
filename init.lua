@@ -178,6 +178,8 @@ vim.keymap.set({ 'n', 'v', 'o' }, 'H', '^', { noremap = true, silent = true })
 vim.keymap.set({ 'n', 'v', 'o' }, 'L', '$', { noremap = true, silent = true })
 vim.keymap.set('n', '<C-d>', '<C-d>zz', { noremap = true, silent = true })
 vim.keymap.set('n', '<C-u>', '<C-u>zz', { noremap = true, silent = true })
+vim.keymap.set('n', '∆', '4j', { noremap = true, silent = true })
+vim.keymap.set('n', '˚', '4k', { noremap = true, silent = true })
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
