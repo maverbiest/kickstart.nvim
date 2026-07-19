@@ -178,8 +178,6 @@ vim.keymap.set({ 'n', 'v', 'o' }, 'H', '^', { noremap = true, silent = true })
 vim.keymap.set({ 'n', 'v', 'o' }, 'L', '$', { noremap = true, silent = true })
 vim.keymap.set('n', '<C-d>', '<C-d>zz', { noremap = true, silent = true })
 vim.keymap.set('n', '<C-u>', '<C-u>zz', { noremap = true, silent = true })
-vim.keymap.set('n', '∆', '4j', { noremap = true, silent = true })
-vim.keymap.set('n', '˚', '4k', { noremap = true, silent = true })
 
 -- CUSTOM FILE FORMATTING RULES
 vim.api.nvim_create_autocmd('FileType', {
