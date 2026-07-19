@@ -181,6 +181,16 @@ vim.keymap.set('n', '<C-u>', '<C-u>zz', { noremap = true, silent = true })
 vim.keymap.set('n', '∆', '4j', { noremap = true, silent = true })
 vim.keymap.set('n', '˚', '4k', { noremap = true, silent = true })
 
+-- CUSTOM FILE FORMATTING RULES
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'json', 'jsonc', 'yaml', 'helm' },
+  callback = function()
+    vim.opt_local.tabstop = 2
+    vim.opt_local.shiftwidth = 2
+    vim.opt_local.expandtab = true
+  end,
+})
+
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
@@ -632,18 +642,9 @@ require('lazy').setup({
             end, '[T]oggle Inlay [H]ints')
           end
 
-          -- Disable hover capability from Ruff (since I'm using pyright)
-          if client and client.name == 'ruff' then
-            -- Disable hover in favor of Pyright
-            client.server_capabilities.hoverProvider = false
-            client.server_capabilities.diagnosticProvider = nil
-          end
-
-          if client and client.name == 'vtsls' then
-            client.server_capabilities.documentFormattingProvider = false
-            client.server_capabilities.documentRangeFormattingProvider = false
-          end
-          if client and client.name == 'astro' then
+          -- Clients that should not handle formatting
+          local disable_formatting = { vtsls = true, astro = true, yamlls = true, jsonls = true }
+          if client and disable_formatting[client.name] then
             client.server_capabilities.documentFormattingProvider = false
             client.server_capabilities.documentRangeFormattingProvider = false
           end
@@ -700,6 +701,18 @@ require('lazy').setup({
         ruff = {},
         rust_analyzer = {},
         vtsls = {},
+        yamlls = {
+          filetypes = { 'yaml', 'yaml.docker-compose' },
+        },
+        helm_ls = {
+          settings = {
+            ['helm-ls'] = {
+              yamlls = {
+                path = 'yaml-language-server',
+              },
+            },
+          },
+        },
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -754,10 +767,19 @@ require('lazy').setup({
             -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for ts_ls)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
+            -- require('lspconfig')[server_name].setup(server)
+            vim.lsp.config(server_name, server)
+            vim.lsp.enable(server_name)
           end,
         },
       }
+      vim.lsp.config(
+        'helm_ls',
+        vim.tbl_deep_extend('force', {
+          capabilities = capabilities,
+        }, servers.helm_ls or {})
+      )
+      vim.lsp.enable 'helm_ls'
     end,
   },
 
@@ -1040,6 +1062,11 @@ require('lazy').setup({
   },
 
   'https://github.com/tpope/vim-fugitive',
+
+  {
+    'towolf/vim-helm',
+    ft = 'helm',
+  },
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
