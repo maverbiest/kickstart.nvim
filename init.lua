@@ -110,7 +110,7 @@ do
   vim.o.number = true
   -- You can also add relative line numbers, to help with jumping.
   --  Experiment for yourself to see if you like it!
-  -- vim.o.relativenumber = true
+  vim.o.relativenumber = true
 
   -- Enable mouse mode, can be useful for resizing splits for example!
   vim.o.mouse = 'a'
@@ -252,6 +252,12 @@ do
     callback = function() vim.hl.on_yank() end,
   })
 end
+
+-- CUSTOM BELOW
+vim.keymap.set({ 'n', 'v', 'o' }, 'H', '^', { noremap = true, silent = true })
+vim.keymap.set({ 'n', 'v', 'o' }, 'L', '$', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-d>', '<C-d>zz', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-u>', '<C-u>zz', { noremap = true, silent = true })
 
 -- ============================================================
 -- SECTION 3: PLUGIN MANAGER INTRO
