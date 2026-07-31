@@ -749,7 +749,15 @@ do
     helm_ls = {
       settings = { ['helm-ls'] = { yamlls = { path = 'yaml-language-server' } } },
     },
-    ruff = {},
+    ruff = {
+      init_options = {
+        settings = {
+          lint = {
+            preview = false,
+          },
+        },
+      },
+    },
     yamlls = {
       filetypes = { 'yaml', 'yaml.docker-compose' },
     },
